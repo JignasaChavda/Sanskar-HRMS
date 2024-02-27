@@ -235,7 +235,6 @@ override_whitelisted_methods = {
 # }
 
 fixtures = [
-    "Notification",
     "Custom DocPerm",
     {"dt":"Server Script","filters":[
         [
@@ -284,6 +283,13 @@ fixtures = [
             "name","in",[
                 "Sanskar Tecnolab",
                 "Sanskar Technolab - Letter Head 2"
+            ],
+        ]
+    ]},
+    {"dt":"Notification","filters":[
+        [
+            "name","in",[
+               "Send mail to Interviewers"
             ],
         ]
     ]}
