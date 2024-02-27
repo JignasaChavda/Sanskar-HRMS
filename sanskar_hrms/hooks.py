@@ -117,6 +117,10 @@ app_license = "mit"
 # override_doctype_class = {
 # 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
+override_doctype_class = {
+	"Interview": "sanskar_hrms.interview.Interview",
+    "Job Offer":"sanskar_hrms.job_offer.JobOffer"
+}
 
 # Document Events
 # ---------------
@@ -162,6 +166,9 @@ app_license = "mit"
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "sanskar_hrms.event.get_events"
 # }
+override_whitelisted_methods = {
+	"hrms.hr.doctype.job_applicant.job_applicant.create_interview": "sanskar_hrms.job_applicant.create_interview"
+}
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
@@ -227,3 +234,57 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+fixtures = [
+    "Notification",
+    "Custom DocPerm",
+    {"dt":"Server Script","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
+            ],
+        ]
+    ]},
+    {"dt":"Client Script","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
+            ],
+        ]
+    ]},
+    {"dt":"Custom Field","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
+            ]
+        ]
+    ]},
+    {"dt":"Property Setter","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
+            ],
+        ]
+    ]},
+    {"dt":"Print Format","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
+            ],
+        ]
+    ]},
+    {"dt":"Report","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
+            ],
+        ]
+    ]},
+    {"dt":"Letter Head","filters":[
+        [
+            "name","in",[
+                "Sanskar Tecnolab",
+                "Sanskar Technolab - Letter Head 2"
+            ],
+        ]
+    ]}
+]
