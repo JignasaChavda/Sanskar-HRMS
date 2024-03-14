@@ -235,6 +235,7 @@ override_whitelisted_methods = {
 # }
 
 fixtures = [
+    "Role",
     "Custom DocPerm",
     {"dt":"Server Script","filters":[
         [

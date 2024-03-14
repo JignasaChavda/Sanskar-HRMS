@@ -1,6 +1,5 @@
 [
  {
-  "_liked_by": "[\"Administrator\"]",
   "absolute_value": 0,
   "align_labels_right": 0,
   "css": ".header {\r            text-align: left;\r            position:relative;\r            \r                      }\r.content {\r            line-height: 1.5;\r            margin-bottom: 20px;\r            \r        }\r .content-div {\r        margin-bottom: 20px;\r    }\r    \r    \r\r.print-heading{\r        display:none;\r    } \r    \r    \r",
@@ -32,7 +31,6 @@
   "standard": "No"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "absolute_value": 0,
   "align_labels_right": 0,
   "css": " body {\r            font-family: Arial, sans-serif;\r        }\r\r       /*.letter {*/\r       /*     max-width: 600px;*/\r       /*     margin: 0 auto;*/\r       / }/\r\r        .header {\r            text-align: left;\r            \r        }\r\r        .date {\r            margin-bottom: 20px;\r        }\r\r        .content {\r            line-height: 1.5;\r            margin-bottom: 20px;\r            \r        }\r        .marginxy{\r            margin-bottom: 80px;\r        }\r\r        .closing {\r            margin-top: 20px;\r        }",
@@ -64,7 +62,6 @@
   "standard": "No"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "absolute_value": 0,
   "align_labels_right": 0,
   "css": null,
@@ -96,7 +93,6 @@
   "standard": "No"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "absolute_value": 0,
   "align_labels_right": 0,
   "css": "table{\n    width: 50%;\n    margin-left: auto;\n    margin-right: auto;\n    font-size: 14px;\n}\ntable, th, td{\n    border: 1px solid black;\n}\n.print-format th {\n    color: #000000;\n    font-weight: normal;\n    border-bottom-width: 1px !important;\n}",

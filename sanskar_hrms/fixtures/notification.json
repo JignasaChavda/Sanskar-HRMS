@@ -1,6 +1,5 @@
 [
  {
-  "_liked_by": "[\"Administrator\"]",
   "attach_print": 0,
   "channel": "Email",
   "condition": "doc.status=='Scheduled' or doc.status=='Rescheduled'",
