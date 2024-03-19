@@ -192,6 +192,26 @@
  {
   "_liked_by": "[\"Administrator\"]",
   "allow_guest": 0,
+  "api_method": "fetch_staffing_plan",
+  "cron_format": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "Before Insert",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2024-03-19 12:44:14.733958",
+  "module": "Sanskar HRMS",
+  "name": "Fetch staffing plan based on designation in job opening",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": null,
+  "script": "desi = frappe.form_dict[\"designation\"]\n\nresult = []\nplan = frappe.db.get_all(\n            \"Staffing Plan Detail\",\n            filters={\n                \"designation\": desi\n            },\n            fields=[\"parent\"]\n        )\n\nfor record in plan:\n    staffing_plan = record['parent']\n  \n    \n    is_active = frappe.db.get_value('Staffing Plan', staffing_plan, 'custom_is_active')\n    \n    if is_active==1:\n        result.append(staffing_plan)\n    \n\n    \nfrappe.response[\"message\"] = result\n",
+  "script_type": "API"
+ },
+ {
+  "_liked_by": "[\"Administrator\"]",
+  "allow_guest": 0,
   "api_method": null,
   "cron_format": null,
   "disabled": 0,
@@ -228,25 +248,5 @@
   "reference_doctype": "Interview",
   "script": "opening = doc.job_opening\n\nopening_status = frappe.db.get_value('Job Opening', opening, 'status')\n\nif opening_status=='Closed':\n    opening_link = frappe.utils.get_link_to_form(\"Job Opening\", opening)\n    error_message = 'Cannot schedule a interview against a closed Job Opening: ' + opening_link\n    frappe.throw(error_message)\n",
   "script_type": "DocType Event"
- },
- {
-  "_liked_by": "[\"Administrator\"]",
-  "allow_guest": 0,
-  "api_method": "fetch_staffing_plan",
-  "cron_format": null,
-  "disabled": 0,
-  "docstatus": 0,
-  "doctype": "Server Script",
-  "doctype_event": "Before Insert",
-  "enable_rate_limit": 0,
-  "event_frequency": "All",
-  "modified": "2024-03-19 12:44:14.733958",
-  "module": "Sanskar HRMS",
-  "name": "Fetch staffing plan based on designation in job opening",
-  "rate_limit_count": 5,
-  "rate_limit_seconds": 86400,
-  "reference_doctype": null,
-  "script": "desi = frappe.form_dict[\"designation\"]\n\nresult = []\nplan = frappe.db.get_all(\n            \"Staffing Plan Detail\",\n            filters={\n                \"designation\": desi\n            },\n            fields=[\"parent\"]\n        )\n\nfor record in plan:\n    staffing_plan = record['parent']\n  \n    \n    is_active = frappe.db.get_value('Staffing Plan', staffing_plan, 'custom_is_active')\n    \n    if is_active==1:\n        result.append(staffing_plan)\n    \n\n    \nfrappe.response[\"message\"] = result\n",
-  "script_type": "API"
  }
 ]
