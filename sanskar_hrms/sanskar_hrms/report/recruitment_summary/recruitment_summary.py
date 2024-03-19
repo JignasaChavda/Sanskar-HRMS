@@ -93,7 +93,7 @@ def get_recruitment_data(filters):
     # Handling case when no_of_days is None (null)
     if no_of_days is None:
         # Set a large value for no_of_days to include all dates
-        no_of_days = 99999999999999
+        no_of_days = 999
         query_upto_joins = """ 
 			SELECT 
 				sp.name AS 'name',
@@ -113,6 +113,7 @@ def get_recruitment_data(filters):
 				`tabJob Offer` jof ON jo.name = jof.custom_job_opening 
 		"""
         values = [no_of_days, no_of_days, no_of_days, no_of_days]
+        
         conditions_added = False
         if staffing_plan:
               query_upto_joins += " WHERE sp.name = %s"
@@ -127,6 +128,7 @@ def get_recruitment_data(filters):
                values.append(designation)
         query_upto_joins += " GROUP BY jo.name"
         data = frappe.db.sql(query_upto_joins, tuple(values), as_dict=True)
+        # print("\n\n\n",data,"\n\n\n")
         return data
     else:
          if no_of_days=='Above 90 days':
@@ -199,6 +201,7 @@ def get_recruitment_data(filters):
                              values.append(designation)
                query_upto_joins += " GROUP BY jo.name"
                data = frappe.db.sql(query_upto_joins, tuple(values), as_dict=True)
+               
                return data
                
                 

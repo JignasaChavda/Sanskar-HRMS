@@ -119,7 +119,8 @@ app_license = "mit"
 # }
 override_doctype_class = {
 	"Interview": "sanskar_hrms.interview.Interview",
-    "Job Offer":"sanskar_hrms.job_offer.JobOffer"
+    "Job Offer":"sanskar_hrms.job_offer.JobOffer",
+    "Interview Feedback":"sanskar_hrms.interview_feedback.InterviewFeedback"
 }
 
 # Document Events
