@@ -28,13 +28,13 @@
   "doctype_event": "After Save",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2024-03-19 12:44:14.889795",
+  "modified": "2024-03-19 15:46:34.935323",
   "module": "Sanskar HRMS",
   "name": "Update Job Applicant Status",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": "Job Applicant",
-  "script": "job_applicant_status = f\"{doc.custom_interview_round} - {doc.custom_interview_status}\"\n# frappe.msgprint(f\"{interview_round}-{interview_status}  {job_applicant}\")\nif doc.custom_interview_round == 'Telephonic Round':\n    frappe.db.set_value('Job Applicant', doc.name, 'status', job_applicant_status)\n    doc.reload()\n# frappe.msgprint(f\"{job_applicant_status}\")\n",
+  "script": "inter_round = doc.custom_interview_round\nstandard_round = ['Open', 'Shortlisted', 'Hold']\n\nif inter_round in standard_round:\n    frappe.db.set_value('Job Applicant', doc.name, 'status', inter_round)\n    doc.reload()\n\nelse:\n    job_applicant_status = f\"{doc.custom_interview_round} - {doc.custom_interview_status}\"\n    # frappe.msgprint(f\"{interview_round}-{interview_status}  {job_applicant}\")\n    if doc.custom_interview_round == 'Telephonic Round':\n        frappe.db.set_value('Job Applicant', doc.name, 'status', job_applicant_status)\n        doc.reload()\n    # frappe.msgprint(f\"{job_applicant_status}\")",
   "script_type": "DocType Event"
  },
  {
@@ -47,13 +47,13 @@
   "doctype_event": "Before Insert",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2024-03-19 12:44:14.872901",
+  "modified": "2024-03-19 15:46:56.151506",
   "module": "Sanskar HRMS",
   "name": "New Job Applicant Mail to HR",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": null,
-  "script": "user_name = frappe.form_dict['current_user']\njob_applicant = frappe.form_dict['job_applicant']\njob_title = frappe.form_dict['job_title']\nemail_id = frappe.form_dict['email_id']\nphone_number = frappe.form_dict['phone_number']\ndoc_link = frappe.form_dict['link']\n\n\n\n\nemployee = frappe.db.get_value('Employee', {'user_id': user_name}, ['reports_to'])\n\nsnr_employee = frappe.db.get_value('Employee', employee, ['user_id'], as_dict=1)\nmail_subject = f\"New Job Applicantion Form {job_applicant}\"\n\n\nfrappe.sendmail(\n                    recipients = snr_employee.user_id,\n                    subject=mail_subject,\n                    template = 'new_job_application',\n                    args = dict(\n                        job_applicant = job_applicant,\n                        job_title = job_title,\n                        email_id = email_id,\n                        phone_number = phone_number,\n                        doc_link = doc_link\n                        \n                        )\n                )\n\nfrappe.response['user_name'] = user_name\n# frappe.response['employee_id'] = employee.user_id\nfrappe.response['reports_to'] = employee\nfrappe.response['snr_employee'] = snr_employee.user_id\nfrappe.response['job_applicant'] = job_applicant\n\n\n\n\n\n",
+  "script": "user_name = frappe.form_dict['current_user']\njob_applicant = frappe.form_dict['job_applicant']\njob_title = frappe.form_dict['job_title']\nemail_id = frappe.form_dict['email_id']\nphone_number = frappe.form_dict['phone_number']\ndoc_link = frappe.form_dict['link']\n\n\n\n\nemployee = frappe.db.get_value('Employee', {'user_id': user_name}, ['reports_to'])\n\nsnr_employee = frappe.db.get_value('Employee', employee, ['user_id'], as_dict=1)\nmail_subject = f\"Applicant Approval - {job_applicant}\"\n\n\nfrappe.sendmail(\n    recipients = snr_employee.user_id,\n    subject=mail_subject,\n    template = 'approval_to_hr',\n    args = dict(\n        job_applicant = job_applicant,\n        job_title = job_title,\n        email_id = email_id,\n        phone_number = phone_number,\n        doc_link = doc_link\n        \n        )\n)\n\nfrappe.response['user_name'] = user_name\n# frappe.response['employee_id'] = employee.user_id\nfrappe.response['reports_to'] = employee\nfrappe.response['snr_employee'] = snr_employee.user_id\nfrappe.response['job_applicant'] = job_applicant\n",
   "script_type": "API"
  },
  {
@@ -190,7 +190,6 @@
   "script_type": "DocType Event"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "allow_guest": 0,
   "api_method": "fetch_staffing_plan",
   "cron_format": null,
@@ -210,7 +209,6 @@
   "script_type": "API"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "allow_guest": 0,
   "api_method": null,
   "cron_format": null,
@@ -230,7 +228,6 @@
   "script_type": "DocType Event"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "allow_guest": 0,
   "api_method": null,
   "cron_format": null,
