@@ -30,15 +30,6 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
-  "modified": "2024-03-19 15:53:09.232198",
-  "name": "Cleared",
-  "style": "",
-  "workflow_state_name": "Cleared"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
   "modified": "2024-03-19 15:53:17.583058",
   "name": "Approved by HR",
   "style": "",
@@ -52,5 +43,14 @@
   "name": "Rejected by HR",
   "style": "",
   "workflow_state_name": "Rejected by HR"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-03-19 15:53:09.232198",
+  "name": "Cleared",
+  "style": "",
+  "workflow_state_name": "Cleared"
  }
 ]
