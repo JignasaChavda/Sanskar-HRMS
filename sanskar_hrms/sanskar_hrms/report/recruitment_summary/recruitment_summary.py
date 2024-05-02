@@ -93,7 +93,7 @@ def get_recruitment_data(filters):
     # Handling case when no_of_days is None (null)
     if no_of_days is None:
         # Set a large value for no_of_days to include all dates
-        no_of_days = 999
+        no_of_days = 99999
         query_upto_joins = """ 
 			SELECT 
 				sp.name AS 'name',
@@ -102,9 +102,10 @@ def get_recruitment_data(filters):
 				jo.posted_on AS 'opening_date',
 				DATE_ADD(jo.posted_on, INTERVAL %s DAY) AS 'date_after_no_of_days',
 				jo.planned_vacancies AS 'no_of_vacancies',
-				SUM(CASE WHEN jof.docstatus != 2 AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'given_offer',
-				SUM(CASE WHEN jof.docstatus != 2 AND jof.status = "Accepted" AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'accepted_offer',
-				(jo.planned_vacancies - SUM(CASE WHEN jof.docstatus != 2 AND jof.status = "Accepted" AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END)) AS 'remaining_vacancies'
+				SUM(CASE WHEN jof.docstatus = 1 AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'given_offer',
+				SUM(CASE WHEN jof.docstatus = 1 AND jof.status = "Accepted" AND jof.custom_accepted_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'accepted_offer',
+                        
+				(jo.planned_vacancies - SUM(CASE WHEN jof.docstatus = 1 AND jof.status = "Accepted" AND jof.custom_accepted_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END)) AS 'remaining_vacancies'
 			FROM 
 				`tabStaffing Plan` sp
 			LEFT JOIN
@@ -141,9 +142,11 @@ def get_recruitment_data(filters):
 						jo.posted_on AS 'opening_date',
 						DATE_ADD(jo.posted_on, INTERVAL %s DAY) AS 'date_after_no_of_days',
 						jo.planned_vacancies AS 'no_of_vacancies',
-						SUM(CASE WHEN jof.docstatus != 2 AND jof.offer_date > DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'given_offer',
-						SUM(CASE WHEN jof.docstatus != 2 AND jof.status = "Accepted" AND jof.offer_date > DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'accepted_offer',
-						(jo.planned_vacancies - SUM(CASE WHEN jof.docstatus != 2 AND jof.status = "Accepted" AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END)) AS 'remaining_vacancies'
+						SUM(CASE WHEN jof.docstatus = 1 AND jof.offer_date > DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'given_offer',
+						SUM(CASE WHEN jof.docstatus = 1 AND jof.status = "Accepted" AND jof.custom_accepted_date > DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'accepted_offer',
+                                    
+                        (jo.planned_vacancies - SUM(CASE WHEN jof.docstatus = 1 AND jof.status = "Accepted" AND jof.custom_accepted_date > DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END)) AS 'remaining_vacancies'
+
 					FROM 
 						`tabStaffing Plan` sp
 					LEFT JOIN
@@ -176,9 +179,10 @@ def get_recruitment_data(filters):
 						jo.posted_on AS 'opening_date',
 						DATE_ADD(jo.posted_on, INTERVAL %s DAY) AS 'date_after_no_of_days',
 						jo.planned_vacancies AS 'no_of_vacancies',
-						SUM(CASE WHEN jof.docstatus != 2 AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'given_offer',
-						SUM(CASE WHEN jof.docstatus != 2 AND jof.status = "Accepted" AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'accepted_offer',
-						(jo.planned_vacancies - SUM(CASE WHEN jof.docstatus != 2 AND jof.status = "Accepted" AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END)) AS 'remaining_vacancies'
+						SUM(CASE WHEN jof.docstatus = 1 AND jof.offer_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'given_offer',
+						SUM(CASE WHEN jof.docstatus = 1 AND jof.status = "Accepted" AND jof.custom_accepted_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END) AS 'accepted_offer',
+						
+						(jo.planned_vacancies - SUM(CASE WHEN jof.docstatus = 1 AND jof.status = "Accepted" AND jof.custom_accepted_date BETWEEN jo.posted_on AND DATE_ADD(jo.posted_on, INTERVAL %s DAY) THEN 1 ELSE 0 END)) AS 'remaining_vacancies'
 					FROM 
 						`tabStaffing Plan` sp
 					LEFT JOIN
