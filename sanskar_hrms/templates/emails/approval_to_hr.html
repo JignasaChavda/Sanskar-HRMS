@@ -1,8 +1,61 @@
-<p>Job Applicant Approval</p>
+<p>New Job Applicant Approval for {{ interview_round }}</p><br>
 
-<p>Applicant Name: {{ job_applicant }}</p>
-<p>Designation : {{ job_title }}</p>
-<p>Email : {{ email_id }}</p>
-<p>Phone : {{ phone_number }}</p>
+<p style="font-size: 18px; font-weight: bold; text-decoration: underline;">Details:</p>
 
-<a href = {{doc_link}} >Click here to Show Details</a>
+<table style="border-collapse: collapse;">
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Candidate Name:</td>
+        <td style="padding: 5px;">{{ applicant_name or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Applied For:</td>
+        <td style="padding: 5px;">{{ designation or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Application Status:</td>
+        <td style="padding: 5px;">{{ status or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Current Location:</td>
+        <td style="padding: 5px;">{{ current_location or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Experience:</td>
+        <td style="padding: 5px;">{{ experience or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Current Salary:</td>
+        <td style="padding: 5px;">{{ current_ctc or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Reason for Change:</td>
+        <td style="padding: 5px;">{{ reason_for_change or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Previous/Present Company:</td>
+        <td style="padding: 5px;">{{ previous_company or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Notice Period:</td>
+        <td style="padding: 5px;">{{ notice_period or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Expected Salary:</td>
+        <td style="padding: 5px;">{{ expected_ctc or '-' }}</td>
+    </tr>
+    <tr>
+        <td style="padding: 5px; font-weight: 500;">Remarks:</td>
+        <td style="padding: 5px;">{{ recruiter_remarks or '-' }}</td>
+    </tr>
+</table><br>
+
+
+
+<a href={{resume_attachment}}>
+    <button style="color: #fff; background-color: indigo; line-height: 20px; border: 1px solid; border-radius: 6px; border-color: transparent; display: inline-block; font-size: 13px; padding: 4px 20px;">Resume</button>
+</a>
+
+<a href={{doc_link}}>
+    <button style="color: #fff; background-color: indigo; line-height: 20px; border: 1px solid; border-radius: 6px; border-color: transparent; display: inline-block; font-size: 13px; padding: 4px 20px;">Show Details</button>
+</a>
+  

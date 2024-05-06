@@ -39,25 +39,6 @@
  },
  {
   "allow_guest": 0,
-  "api_method": "mail to hr",
-  "cron_format": null,
-  "disabled": 0,
-  "docstatus": 0,
-  "doctype": "Server Script",
-  "doctype_event": "Before Insert",
-  "enable_rate_limit": 0,
-  "event_frequency": "All",
-  "modified": "2024-03-19 15:46:56.151506",
-  "module": "Sanskar HRMS",
-  "name": "New Job Applicant Mail to HR",
-  "rate_limit_count": 5,
-  "rate_limit_seconds": 86400,
-  "reference_doctype": null,
-  "script": "user_name = frappe.form_dict['current_user']\njob_applicant = frappe.form_dict['job_applicant']\njob_title = frappe.form_dict['job_title']\nemail_id = frappe.form_dict['email_id']\nphone_number = frappe.form_dict['phone_number']\ndoc_link = frappe.form_dict['link']\n\n\n\n\nemployee = frappe.db.get_value('Employee', {'user_id': user_name}, ['reports_to'])\n\nsnr_employee = frappe.db.get_value('Employee', employee, ['user_id'], as_dict=1)\nmail_subject = f\"Applicant Approval - {job_applicant}\"\n\n\nfrappe.sendmail(\n    recipients = snr_employee.user_id,\n    subject=mail_subject,\n    template = 'approval_to_hr',\n    args = dict(\n        job_applicant = job_applicant,\n        job_title = job_title,\n        email_id = email_id,\n        phone_number = phone_number,\n        doc_link = doc_link\n        \n        )\n)\n\nfrappe.response['user_name'] = user_name\n# frappe.response['employee_id'] = employee.user_id\nfrappe.response['reports_to'] = employee\nfrappe.response['snr_employee'] = snr_employee.user_id\nfrappe.response['job_applicant'] = job_applicant\n",
-  "script_type": "API"
- },
- {
-  "allow_guest": 0,
   "api_method": null,
   "cron_format": null,
   "disabled": 0,
@@ -247,7 +228,6 @@
   "script_type": "DocType Event"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "allow_guest": 0,
   "api_method": null,
   "cron_format": null,
@@ -267,7 +247,6 @@
   "script_type": "DocType Event"
  },
  {
-  "_liked_by": "[\"Administrator\"]",
   "allow_guest": 0,
   "api_method": null,
   "cron_format": null,
@@ -284,6 +263,26 @@
   "rate_limit_seconds": 86400,
   "reference_doctype": "Job Offer",
   "script": "if doc.status == 'Awaiting Response':\n    \n    last_interview = frappe.db.get_list(\"Interview\", filters={\"job_applicant\": doc.job_applicant, \"docstatus\": [\"!=\", 2]}, order_by=\"creation desc\", limit=1)\n\n    # frappe.msgprint(str(interview_exists))\n    \n    if last_interview:\n        job_applicant = frappe.db.get_value('Interview',last_interview,['job_applicant'])\n        prev_status = frappe.db.get_value('Interview',last_interview,['status'])\n        prev_round = frappe.db.get_value('Interview',last_interview,['interview_round'])\n        \n        prev_status_string = f\"{prev_round} - {prev_status}\"\n        frappe.db.set_value('Job Applicant', job_applicant, 'status', prev_status_string)\n        frappe.db.set_value('Job Applicant', job_applicant, 'custom_interview_round', prev_round)\n        frappe.db.set_value('Job Applicant', job_applicant, 'custom_interview_status', prev_status)\n    \n\n\n",
+  "script_type": "DocType Event"
+ },
+ {
+  "_liked_by": "[\"Administrator\"]",
+  "allow_guest": 0,
+  "api_method": null,
+  "cron_format": null,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Server Script",
+  "doctype_event": "After Save",
+  "enable_rate_limit": 0,
+  "event_frequency": "All",
+  "modified": "2024-05-06 18:41:31.664895",
+  "module": "Sanskar HRMS",
+  "name": "Send mail for Telephonic Round",
+  "rate_limit_count": 5,
+  "rate_limit_seconds": 86400,
+  "reference_doctype": "Job Applicant",
+  "script": "status = doc.status\ninterview_round = doc.custom_interview_round\napplicant_email = doc.email_id\napplicant_name = doc.applicant_name\ndesignation = doc.designation\ncurrent_location = doc.custom_location\nexperience = doc.custom_experience\ncurrent_ctc = doc.custom_current_ctc\nreason_for_change = doc.custom_reason_for_change\nprevious_company = doc.custom_previous_company\nnotice_period = doc.custom_notice_period\nexpected_ctc = doc.custom_expected_ctc\nrecruiter_remarks = doc.custom_remarks_by_recruiter\nresume_attachment = doc.resume_attachment\n\ndoc_link = 'https://sanskar.frappe.cloud/app/job-applicant/' + applicant_email\n\n\n\nif status=='Telephonic Round - Cleared':\n    \n    is_recruiter = False\n    user_doc = frappe.get_doc('User', frappe.session.user)\n    for r in user_doc.roles:\n        user_role = r.role\n        if user_role == 'Recruiter':\n            is_recruiter = True\n            break\n        \n    \n    if is_recruiter == True:\n        \n        recruiter_mail = frappe.session.user\n        \n        # Get hr manager email id based on recruiter reports to field\n        recruit_reports_to = frappe.db.get_value('Employee', {'user_id': recruiter_mail}, ['reports_to'])\n        \n        hr_manager_mail = frappe.db.get_value('Employee', recruit_reports_to, ['user_id'])\n        \n        frappe.msgprint(f' Recruiter: { recruiter_mail }')\n        frappe.msgprint(f'HR Manager: { hr_manager_mail }')\n        \n        \n        mail_subject = f\"Applicant Approval Notification - {applicant_name}\"\n\n\n        frappe.sendmail(\n            recipients = hr_manager_mail,\n            subject=mail_subject,\n            template = 'approval_to_hr',\n            args = dict(\n                interview_round = interview_round,\n                applicant_name = applicant_name,\n                designation = designation,\n                status = status,\n                current_location = current_location,\n                experience = experience,\n                current_ctc = current_ctc,\n                reason_for_change = reason_for_change,\n                previous_company = previous_company,\n                notice_period = notice_period,\n                expected_ctc = expected_ctc,\n                recruiter_remarks = recruiter_remarks,\n                resume_attachment = resume_attachment,\n                doc_link = doc_link\n                \n                )\n        )\n    \n\nelif status=='Telephonic Round - Approved by HR' or status=='Telephonic Round - Rejected by HR':\n    is_hrmanager = False\n    user_doc = frappe.get_doc('User', frappe.session.user)\n    for r in user_doc.roles:\n        user_role = r.role\n        if user_role == 'HR Manager':\n            is_hrmanager = True\n            break\n            \n    if is_hrmanager == True:\n        hr_manager_mail = frappe.session.user\n        recruiter_mail = doc.custom_telephonic_cleared_by\n        \n        frappe.msgprint(f'HR Manager: {{ hr_manager_mail }}')\n        frappe.msgprint(f'Recruiter: {{ recruiter_mail }}')\n        \n        mail_subject = f\"Applicant Status Notification - {applicant_name}\"\n        \n        frappe.sendmail(\n            recipients = recruiter_mail,\n            subject=mail_subject,\n            template = 'approval_status',\n            args = dict(\n                job_applicant = applicant_name,\n                job_title = designation,\n                email_id = applicant_email,\n                phone_number = phone,\n                doc_link = doc_link\n                \n                )\n        )\n        \n        \n        \n    \n\n\n\n\n\n\n\n\n",
   "script_type": "DocType Event"
  }
 ]
