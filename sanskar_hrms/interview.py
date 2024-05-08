@@ -22,67 +22,134 @@ class Interview(Document):
 
 
 		if self.status == 'Scheduled' or self.status == 'Rescheduled':
-
-			# interview_doc = frappe.get_doc('Interview', self.name)
-			# interview_doc.get('interview_details')
 			
-			to_mail = self.job_applicant
-			mail_subject = f"{self.interview_round} interview {self.status} for {self.custom_applicant_name}"
+			# Send mail to Candidate
+			company = frappe.db.get_all('Company', fields=['company_name'])
+			company_name = company[0].company_name if company else ''
+
+			
+			candidate = self.job_applicant
+			mail_subject_candidate = f"Invitation to Interview - {company_name}"
+			
    
 			date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
-			scheduled_on = date_obj.strftime('%d-%m-%Y') 
+			scheduled_on = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
+
+			from_time_obj = datetime.strptime(self.from_time, "%H:%M:%S").strftime("%I:%M %p")
+ 
 
 			
-			 
+			
 			frappe.sendmail(
-				recipients = to_mail,
-				subject=mail_subject,
+				recipients = candidate,
+				subject = mail_subject_candidate,
 				template = 'candidate_mail',
 				args = dict(
 						doc = self,
 						candidate_name = self.custom_applicant_name,
 						round = self.interview_round,
-						date = self.scheduled_on,
-						from_time = self.from_time,
+						status = self.status,
+						date = scheduled_on,
+						from_time = from_time_obj,
 						mode = self.custom_mode,
 						now = True
 				)
 			)
-			
 
-			# if self.status == 'Scheduled' or self.status == 'Rescheduled':
+			# Send mail to interviwer
+			interview_doc = frappe.get_doc('Interview', self.name)
+			interview_detail = interview_doc.get('interview_details')
 
-			# interview_doc = frappe.get_doc('Interview', self.name)
-			# interview_detail = interview_doc.get('interview_details')
+			interviewers_emails = [detail.interviewer for detail in interview_detail]
+			interviewers_name = [detail.custom_interviewer_name for detail in interview_detail]
 
-			# interviewers_emails = [detail.interviewer for detail in interview_details]
-			# candidate_email = self.job_applicant
+			mail_subject_interviewer = f"{self.interview_round} interview - {self.custom_applicant_name}"
 
-			# recipients = interviewers_emails + [interviewee_email]
+			phone = frappe.db.get_value('Job Applicant', self.job_applicant, 'phone_number')
 
-			# mail_subject = f"{self.interview_round} interview {self.status} for {self.custom_applicant_name}"
+			frappe.sendmail(
+				recipients = interviewers_emails,
+				subject = mail_subject_interviewer,
+				template = 'interviewer_mail',
+				args = dict(
+						doc = self,
+						interviewers = interviewers_name,
+						candidate_name = self.custom_applicant_name,
+						phone = phone,
+						date = scheduled_on,
+						from_time = from_time_obj,
+						mode = self.custom_mode,
+						now = True
+				)
+			)
+		
+		# Send mail to candidate when task is given
+		if self.status == 'Task Given':
+			candidate = self.job_applicant
+			mail_subject_task = f"Task Assignment Following Your Interview"
+
+			date_obj = datetime.strptime(self.custom_dealine_for_task, '%Y-%m-%d')
+			deadline = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
+
+			frappe.sendmail(
+				recipients = candidate,
+				subject = mail_subject_task,
+				template = 'task_given_mail',
+				args = dict(
+						doc = self,
+						candidate_name = self.custom_applicant_name,
+						task = self.custom_task_description,
+						deadline = deadline,
+						now = True
+				)
+			)
+
    
-			# date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
-			# scheduled_on = date_obj.strftime('%d-%m-%Y') 
+
 
 			
-			 
-			# frappe.sendmail(
-			# 	recipients = recipients,
-			# 	subject=mail_subject,
-			# 	template = 'candidate_mail',
-			# 	args = dict(
-			# 			doc = self,
-			# 			scheduled_on = scheduled_on,
-			# 			# candidate_name = self.custom_applicant_name,
-			# 			# round = self.interview_round,
-			# 			# scheduled_date = self.scheduled_on,
-			# 			# from_time = self.from_time,
-			# 			# to_time = self.to_time,
-			# 			now = True
-			# 	)
-			# )
+	
+	# def after_save(self):
+	# 	if self.status == 'Scheduled' or self.status == 'Rescheduled':
+
 			
+	# 		interview_doc = frappe.get_doc('Interview', self.name)
+	# 		interview_detail = interview_doc.get('interview_details')
+
+	# 		interviewers_emails = [detail.interviewer for detail in interview_detail]
+
+	# 		mail_subject = f"{self.interview_round} interview - {self.custom_applicant_name}"
+
+	# 		date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
+	# 		scheduled_on = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
+
+	# 		from_time_obj = datetime.strptime(self.from_time, "%H:%M:%S").strftime("%I:%M %p")
+
+	# 		phone = frappe.db.get_value('Job Applicant', self.job_applicant, 'phone_number')
+ 
+
+
+	# 		# Send mail to Interviewers
+	# 		frappe.sendmail(
+	# 			recipients = interviewers_emails,
+	# 			subject=mail_subject,
+	# 			template = 'interviewer_mail',
+	# 			args = dict(
+	# 					doc = self,
+	# 					interviewers = interviewers_emails,
+	# 					candidate_name = self.custom_applicant_name,
+	# 					phone = phone,
+	# 					date = scheduled_on,
+	# 					from_time = from_time_obj,
+	# 					mode = self.custom_mode,
+	# 					now = True
+	# 			)
+	# 		)
+
+
+
+
+
 
 
 
