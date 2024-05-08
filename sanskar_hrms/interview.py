@@ -5,43 +5,56 @@
 from datetime import datetime
 
 import frappe
+import re
 from frappe import _
 from frappe.model.document import Document
 from frappe.query_builder.functions import Avg
 from frappe.utils import cint, cstr, get_datetime, get_link_to_form, getdate, nowtime
+from frappe.core.doctype.communication.email import make
 
 
 class DuplicateInterviewRoundError(frappe.ValidationError):
 	pass
 
+def is_valid_email(email):
+    # Regular expression pattern for email validation
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
 
 class Interview(Document):
 	def validate(self):
 		self.validate_duplicate_interview()
 		self.validate_designation()
+		self.send_mail_to_candidate()
+		self.send_mail_to_interviewer()
+		self.send_mail_when_taskgiven()
+
+		
 
 
+
+	def send_mail_to_candidate(self):
 		if self.status == 'Scheduled' or self.status == 'Rescheduled':
 			
-			# Send mail to Candidate
 			company = frappe.db.get_all('Company', fields=['company_name'])
 			company_name = company[0].company_name if company else ''
 
-			
+			users = frappe.db.get_all('User', filters={"role": 'HR Manager', "enabled": 1},fields=['name'])
+			hr_email = [user.name for user in users] if users is not None else []
+			valid_hr_emails = [email for email in hr_email if is_valid_email(email)]
+
 			candidate = self.job_applicant
 			mail_subject_candidate = f"Invitation to Interview - {company_name}"
-			
-   
+  
 			date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
 			scheduled_on = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
 
-			from_time_obj = datetime.strptime(self.from_time, "%H:%M:%S").strftime("%I:%M %p")
- 
+			from_time_without_microseconds = self.from_time.split('.')[0]  # Remove milliseconds
+			from_time_obj = datetime.strptime(from_time_without_microseconds, "%H:%M:%S").strftime("%I:%M %p")
 
-			
-			
 			frappe.sendmail(
 				recipients = candidate,
+				cc = valid_hr_emails,
 				subject = mail_subject_candidate,
 				template = 'candidate_mail',
 				args = dict(
@@ -55,13 +68,20 @@ class Interview(Document):
 						now = True
 				)
 			)
+			# make(recipients=candidate, cc='rutika@sanskartechnolab.com', subject=mail_subject_candidate, email_template="candidate_mail")
 
-			# Send mail to interviwer
-			interview_doc = frappe.get_doc('Interview', self.name)
-			interview_detail = interview_doc.get('interview_details')
 
-			interviewers_emails = [detail.interviewer for detail in interview_detail]
-			interviewers_name = [detail.custom_interviewer_name for detail in interview_detail]
+	def send_mail_to_interviewer(self):
+		if self.status == 'Scheduled' or self.status == 'Rescheduled':
+
+			date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
+			scheduled_on = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
+
+			from_time_without_microseconds = self.from_time.split('.')[0]  # Remove milliseconds
+			from_time_obj = datetime.strptime(from_time_without_microseconds, "%H:%M:%S").strftime("%I:%M %p")
+
+			interviewers_emails = [detail.interviewer for detail in self.get('interview_details')]
+			interviewers_name = [detail.custom_interviewer_name for detail in self.get('interview_details')]
 
 			mail_subject_interviewer = f"{self.interview_round} interview - {self.custom_applicant_name}"
 
@@ -82,7 +102,9 @@ class Interview(Document):
 						now = True
 				)
 			)
-		
+
+
+	def send_mail_when_taskgiven(self):	
 		# Send mail to candidate when task is given
 		if self.status == 'Task Given':
 			candidate = self.job_applicant
@@ -91,8 +113,13 @@ class Interview(Document):
 			date_obj = datetime.strptime(self.custom_dealine_for_task, '%Y-%m-%d')
 			deadline = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
 
+			users = frappe.db.get_all('User', filters={"role": 'HR Manager', "enabled": 1},fields=['name'])
+			hr_email = [user.name for user in users] if users is not None else []
+			valid_hr_emails = [email for email in hr_email if is_valid_email(email)]
+
 			frappe.sendmail(
 				recipients = candidate,
+				cc = valid_hr_emails,
 				subject = mail_subject_task,
 				template = 'task_given_mail',
 				args = dict(
@@ -102,60 +129,13 @@ class Interview(Document):
 						deadline = deadline,
 						now = True
 				)
-			)
-
-   
-
-
-			
+			)	
 	
-	# def after_save(self):
-	# 	if self.status == 'Scheduled' or self.status == 'Rescheduled':
-
-			
-	# 		interview_doc = frappe.get_doc('Interview', self.name)
-	# 		interview_detail = interview_doc.get('interview_details')
-
-	# 		interviewers_emails = [detail.interviewer for detail in interview_detail]
-
-	# 		mail_subject = f"{self.interview_round} interview - {self.custom_applicant_name}"
-
-	# 		date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
-	# 		scheduled_on = date_obj.strftime('%d') + ' ' + date_obj.strftime('%B') + date_obj.strftime(', %Y')
-
-	# 		from_time_obj = datetime.strptime(self.from_time, "%H:%M:%S").strftime("%I:%M %p")
-
-	# 		phone = frappe.db.get_value('Job Applicant', self.job_applicant, 'phone_number')
- 
-
-
-	# 		# Send mail to Interviewers
-	# 		frappe.sendmail(
-	# 			recipients = interviewers_emails,
-	# 			subject=mail_subject,
-	# 			template = 'interviewer_mail',
-	# 			args = dict(
-	# 					doc = self,
-	# 					interviewers = interviewers_emails,
-	# 					candidate_name = self.custom_applicant_name,
-	# 					phone = phone,
-	# 					date = scheduled_on,
-	# 					from_time = from_time_obj,
-	# 					mode = self.custom_mode,
-	# 					now = True
-	# 			)
-	# 		)
-
-
-
-
-
 
 
 
 	def on_submit(self):
      
-		
 			
 			if self.status not in ["Cleared", "Rejected"]:
 				frappe.throw(
