@@ -41,7 +41,7 @@ class Interview(Document):
 
 			users = frappe.db.get_all('User', filters={"role": 'HR Manager', "enabled": 1},fields=['name'])
 			hr_email = [user.name for user in users] if users is not None else []
-			valid_hr_emails = [email for email in hr_email if is_valid_email(email)]
+			cc = [email for email in hr_email if is_valid_email(email)]
 
 			candidate = self.job_applicant
 			mail_subject_candidate = f"Invitation to Interview - {company_name}"
@@ -52,23 +52,41 @@ class Interview(Document):
 			from_time_without_microseconds = self.from_time.split('.')[0]  # Remove milliseconds
 			from_time_obj = datetime.strptime(from_time_without_microseconds, "%H:%M:%S").strftime("%I:%M %p")
 
-			frappe.sendmail(
-				recipients = candidate,
-				cc = valid_hr_emails,
-				subject = mail_subject_candidate,
-				template = 'candidate_mail',
-				args = dict(
-						doc = self,
-						candidate_name = self.custom_applicant_name,
-						round = self.interview_round,
-						status = self.status,
-						date = scheduled_on,
-						from_time = from_time_obj,
-						mode = self.custom_mode,
-						now = True
+			candidate_template = frappe.render_template("templates/emails/candidate_mail.html", 
+									 {
+										 'candidate_name': self.custom_applicant_name,
+										 'round': self.interview_round,
+										 'status': self.status,
+										 'date': scheduled_on,
+										 'from_time': from_time_obj,
+										 'mode': self.custom_mode
+										 })
+
+
+			# frappe.sendmail(
+			# 	recipients = candidate,
+			# 	cc = valid_hr_emails,
+			# 	subject = mail_subject_candidate,
+			# 	template = 'candidate_mail',
+			# 	args = dict(
+			# 			doc = self,
+			# 			candidate_name = self.custom_applicant_name,
+			# 			round = self.interview_round,
+			# 			status = self.status,
+			# 			date = scheduled_on,
+			# 			from_time = from_time_obj,
+			# 			mode = self.custom_mode,
+			# 			now = True
+			# 	)
+			# )
+			make(
+				recipients=candidate, 
+				cc=cc, 
+				subject=mail_subject_candidate,
+				content=candidate_template,
+				send_email= 1,
+				communication_medium = "Email"
 				)
-			)
-			# make(recipients=candidate, cc='rutika@sanskartechnolab.com', subject=mail_subject_candidate, email_template="candidate_mail")
 
 
 	def send_mail_to_interviewer(self):
@@ -83,26 +101,34 @@ class Interview(Document):
 			interviewers_emails = [detail.interviewer for detail in self.get('interview_details')]
 			interviewers_name = [detail.custom_interviewer_name for detail in self.get('interview_details')]
 
+			users = frappe.db.get_all('User', filters={"role": 'HR Manager', "enabled": 1},fields=['name'])
+			hr_email = [user.name for user in users] if users is not None else []
+			cc = [email for email in hr_email if is_valid_email(email)]
+
 			mail_subject_interviewer = f"{self.interview_round} interview - {self.custom_applicant_name}"
 
 			phone = frappe.db.get_value('Job Applicant', self.job_applicant, 'phone_number')
 
-			frappe.sendmail(
-				recipients = interviewers_emails,
-				subject = mail_subject_interviewer,
-				template = 'interviewer_mail',
-				args = dict(
-						doc = self,
-						interviewers = interviewers_name,
-						candidate_name = self.custom_applicant_name,
-						phone = phone,
-						date = scheduled_on,
-						from_time = from_time_obj,
-						mode = self.custom_mode,
-						now = True
+			interviewer_template = frappe.render_template("templates/emails/interviewer_mail.html", 
+									 {
+										 'candidate_name': self.custom_applicant_name,
+										 'interviewers': interviewers_name,
+										 'round': self.interview_round,
+										 'status': self.status,
+										 'phone': phone,
+										 'date': scheduled_on,
+										 'from_time': from_time_obj,
+										 'mode': self.custom_mode
+										 })
+			make(
+				recipients=interviewers_emails, 
+				cc=cc, 
+				subject=mail_subject_interviewer,
+				content=interviewer_template,
+				send_email= 1,
+				communication_medium = "Email"
 				)
-			)
-
+			
 
 	def send_mail_when_taskgiven(self):	
 		# Send mail to candidate when task is given
@@ -115,21 +141,37 @@ class Interview(Document):
 
 			users = frappe.db.get_all('User', filters={"role": 'HR Manager', "enabled": 1},fields=['name'])
 			hr_email = [user.name for user in users] if users is not None else []
-			valid_hr_emails = [email for email in hr_email if is_valid_email(email)]
+			cc = [email for email in hr_email if is_valid_email(email)]
 
-			frappe.sendmail(
-				recipients = candidate,
-				cc = valid_hr_emails,
-				subject = mail_subject_task,
-				template = 'task_given_mail',
-				args = dict(
-						doc = self,
-						candidate_name = self.custom_applicant_name,
-						task = self.custom_task_description,
-						deadline = deadline,
-						now = True
+			taskgiven_template = frappe.render_template("templates/emails/task_given_mail.html", 
+									 {
+										 'candidate_name': self.custom_applicant_name,
+										 'task': self.custom_task_description,
+										 'deadline': deadline
+										 })
+			make(
+				recipients=candidate, 
+				cc=cc, 
+				subject=mail_subject_task,
+				content=taskgiven_template,
+				send_email= 1,
+				communication_medium = "Email"
 				)
-			)	
+
+
+			# frappe.sendmail(
+			# 	recipients = candidate,
+			# 	cc = valid_hr_emails,
+			# 	subject = mail_subject_task,
+			# 	template = 'task_given_mail',
+			# 	args = dict(
+			# 			doc = self,
+			# 			candidate_name = self.custom_applicant_name,
+			# 			task = self.custom_task_description,
+			# 			deadline = deadline,
+			# 			now = True
+			# 	)
+			# )	
 	
 
 
