@@ -22,16 +22,17 @@ class Interview(Document):
 
 
 		if self.status == 'Scheduled' or self.status == 'Rescheduled':
+
+			# interview_doc = frappe.get_doc('Interview', self.name)
+			# interview_doc.get('interview_details')
+			
 			to_mail = self.job_applicant
 			mail_subject = f"{self.interview_round} interview {self.status} for {self.custom_applicant_name}"
-			print(f" \n\n\n{to_mail} {mail_subject}\n\n\n")
    
-			# from_time = sefl.from_time
-
 			date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
 			scheduled_on = date_obj.strftime('%d-%m-%Y') 
 
-			# print(f"\n\n\n{scheduled_on} \n\n\n")
+			
 			 
 			frappe.sendmail(
 				recipients = to_mail,
@@ -39,17 +40,52 @@ class Interview(Document):
 				template = 'candidate_mail',
 				args = dict(
 						doc = self,
-						scheduled_on = scheduled_on,
-						# candidate_name = self.custom_applicant_name,
-						# round = self.interview_round,
-						# scheduled_date = self.scheduled_on,
-						# from_time = self.from_time,
-						# to_time = self.to_time,
+						candidate_name = self.custom_applicant_name,
+						round = self.interview_round,
+						date = self.scheduled_on,
+						from_time = self.from_time,
+						mode = self.custom_mode,
 						now = True
 				)
 			)
-			# frappe.msgprint(f"{to_mail} {subject} {self.from_time}")
 			
+
+			# if self.status == 'Scheduled' or self.status == 'Rescheduled':
+
+			# interview_doc = frappe.get_doc('Interview', self.name)
+			# interview_detail = interview_doc.get('interview_details')
+
+			# interviewers_emails = [detail.interviewer for detail in interview_details]
+			# candidate_email = self.job_applicant
+
+			# recipients = interviewers_emails + [interviewee_email]
+
+			# mail_subject = f"{self.interview_round} interview {self.status} for {self.custom_applicant_name}"
+   
+			# date_obj = datetime.strptime(self.scheduled_on, '%Y-%m-%d')
+			# scheduled_on = date_obj.strftime('%d-%m-%Y') 
+
+			
+			 
+			# frappe.sendmail(
+			# 	recipients = recipients,
+			# 	subject=mail_subject,
+			# 	template = 'candidate_mail',
+			# 	args = dict(
+			# 			doc = self,
+			# 			scheduled_on = scheduled_on,
+			# 			# candidate_name = self.custom_applicant_name,
+			# 			# round = self.interview_round,
+			# 			# scheduled_date = self.scheduled_on,
+			# 			# from_time = self.from_time,
+			# 			# to_time = self.to_time,
+			# 			now = True
+			# 	)
+			# )
+			
+
+
+
 	def on_submit(self):
      
 		

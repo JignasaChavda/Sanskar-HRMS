@@ -1,2 +1,22 @@
 <p>Dear {{doc.custom_applicant_name}}</p>
-<p>Your {{ doc.interview_round }} is {{ doc.status }} on {{ scheduled_on }}: {{ doc.from_time }} to {{ doc.to_time }}</p>
+<p>Your {{ doc.interview_round }} is {{ doc.status }}. Please find below details.</p>
+
+
+<table cellspacing="0">
+    <tr>
+        <td style="border: 0.5pt solid windowtext; width: 112pt;"> Sr. No.</td>
+        <td style="border-left: none; border-top: 0.5pt solid windowtext; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; font-weight: 700; background: rgb(91,155,213); text-align: center; width: 150px;">Candidate Name</td>
+        <td style="border-left: none; border-top: 0.5pt solid windowtext; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; font-weight: 700; background: rgb(91,155,213); text-align: center; width: 150px;">Interview Round</td>
+        <td style="border-left: none; border-top: 0.5pt solid windowtext; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; font-weight: 700; background: rgb(91,155,213); text-align: center; width: 150px;">Date</td>
+        <td style="border-left: none; border-top: 0.5pt solid windowtext; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; font-weight: 700; background: rgb(91,155,213); text-align: center; width: 150px;">Time</td>
+        <td style="border-left: none; border-top: 0.5pt solid windowtext; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; font-weight: 700; background: rgb(91,155,213); text-align: center; width: 150px;">Mode</td>
+    </tr>
+    <tr>
+        <td style="border-top: none; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; border-left: 0.5pt solid windowtext; text-align: center; color: black; width: 150px;">1</td>
+        <td style="border-left: none; border-top: 0.5pt solid windowtext; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; text-align: center; color: black; width: 150px;">{{ candidate_name }}</td>
+        <td style="border-top: none; border-left: none; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; text-align: center; color: black; width: 150px;">{{ round }}</td>
+        <td style="border-top: none; border-left: none; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; text-align: center; color: black; width: 150px;">{{ date }}</td>
+        <td style="border-top: none; border-left: none; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; text-align: center; color: black; width: 150px;">{{ from_time }}</td>
+        <td style="border-top: none; border-left: none; border-right: 0.5pt solid windowtext; border-bottom: 0.5pt solid windowtext; text-align: center; color: black; width: 150px;">{{ mode }}</td>
+    </tr>
+</table>
