@@ -79,7 +79,9 @@ class Interview(Document):
 			# 			now = True
 			# 	)
 			# )
+			
 			make(
+				sender=frappe.session.user,
 				recipients=candidate, 
 				cc=cc, 
 				subject=mail_subject_candidate,
@@ -121,6 +123,7 @@ class Interview(Document):
 										 'mode': self.custom_mode
 										 })
 			make(
+				sender=frappe.session.user,
 				recipients=interviewers_emails, 
 				cc=cc, 
 				subject=mail_subject_interviewer,
@@ -150,6 +153,7 @@ class Interview(Document):
 										 'deadline': deadline
 										 })
 			make(
+				sender=frappe.session.user,
 				recipients=candidate, 
 				cc=cc, 
 				subject=mail_subject_task,
