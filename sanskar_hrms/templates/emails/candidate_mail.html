@@ -19,4 +19,11 @@
         <td style="border-top: none; border-left: none; border-right: 0.5pt solid black; border-bottom: 0.5pt solid black; text-align: center; color: black; width: 176pt;">{{ from_time }}</td>
         <td style="border-top: none; border-left: none; border-right: 0.5pt solid black; border-bottom: 0.5pt solid black; text-align: center; color: black; width: 182pt;">{{ mode }}</td>
     </tr>
-</table>
+</table></br></br>
+
+
+{% if mode == 'Online' %}
+    <p><b>Meeting Link:</b></p>
+    <p> {{ meeting_link }}</p>
+   
+{% endif %}
