@@ -294,13 +294,13 @@
   "doctype_event": "Before Insert",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2024-05-09 19:39:16.043466",
+  "modified": "2024-05-10 15:17:39.171968",
   "module": "Sanskar HRMS",
   "name": "Send applicant approval status to recruiter",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": null,
-  "script": "applicant_name = frappe.form_dict[\"applicant_name\"]\ninterview_round = frappe.form_dict[\"interview_round\"]\ninterview_status = frappe.form_dict[\"interview_status\"]\ndoc_link = frappe.form_dict[\"doc_link\"]\nrecruiter_mail = frappe.form_dict[\"recruiter_mail\"]\nsender = frappe.form_dict[\"sender\"]\nmail_subject = frappe.form_dict[\"mail_subject\"]\n\nsender_name = frappe.db.get_value('User', sender, 'full_name')\nfrappe.msgprint(str(sender_name))\n\nemail_template = frappe.render_template(\"sanskar_hrms/templates/emails/approval_status.html\", \n\t\t\t\t\t\t\t\t\t {\n\t\t\t\t\t\t\t\t\t\t 'interview_round': interview_round,\n\t\t\t\t\t\t\t\t\t\t 'interview_status': interview_status,\n\t\t\t\t\t\t\t\t\t\t 'job_applicant': applicant_name,\n\t\t\t\t\t\t\t\t\t\t 'doc_link': doc_link\n\t\t\t\t\t\t\t\t\t\t })\n\n\nfrappe.call(\"frappe.core.doctype.communication.email.make\", \n                sender= sender,\n                sender_full_name= sender_name,\n                recipients= recruiter_mail,\n                subject= mail_subject,\n                content= email_template,\n                send_email= 1,\n                communication_medium= \"Email\"\n            )\n",
+  "script": "applicant_name = frappe.form_dict[\"applicant_name\"]\ninterview_round = frappe.form_dict[\"interview_round\"]\ninterview_status = frappe.form_dict[\"interview_status\"]\ndoc_link = frappe.form_dict[\"doc_link\"]\nrecruiter_mail = frappe.form_dict[\"recruiter_mail\"]\nsender = frappe.form_dict[\"sender\"]\nmail_subject = frappe.form_dict[\"mail_subject\"]\n\nsender_name = frappe.db.get_value('User', sender, 'full_name')\n\n\nemail_template = frappe.render_template(\"sanskar_hrms/templates/emails/approval_status.html\", \n\t\t\t\t\t\t\t\t\t {\n\t\t\t\t\t\t\t\t\t\t 'interview_round': interview_round,\n\t\t\t\t\t\t\t\t\t\t 'interview_status': interview_status,\n\t\t\t\t\t\t\t\t\t\t 'job_applicant': applicant_name,\n\t\t\t\t\t\t\t\t\t\t 'doc_link': doc_link\n\t\t\t\t\t\t\t\t\t\t })\n\n\nfrappe.call(\"frappe.core.doctype.communication.email.make\", \n                sender= sender,\n                sender_full_name= sender_name,\n                recipients= recruiter_mail,\n                subject= mail_subject,\n                content= email_template,\n                send_email= 1,\n                communication_medium= \"Email\"\n            )\n",
   "script_type": "API"
  }
 ]
