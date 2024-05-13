@@ -236,10 +236,8 @@ override_whitelisted_methods = {
 # }
 
 fixtures = [
-    "Role",
     "Workflow",
     "Workflow State",
-    "Custom DocPerm",
     {"dt":"Server Script","filters":[
         [
             "module","in",[
