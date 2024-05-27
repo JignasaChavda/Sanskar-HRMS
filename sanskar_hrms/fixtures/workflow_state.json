@@ -2,6 +2,15 @@
  {
   "docstatus": 0,
   "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2023-05-16 18:22:32.322519",
+  "name": "Approved By Senior",
+  "style": "Info",
+  "workflow_state_name": "Approved By Senior"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
   "icon": "question-sign",
   "modified": "2024-03-19 15:05:32.345580",
   "name": "Pending",
@@ -52,5 +61,32 @@
   "name": "Cleared",
   "style": "",
   "workflow_state_name": "Cleared"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2023-08-28 18:54:23.065240",
+  "name": "Cancelled",
+  "style": "Danger",
+  "workflow_state_name": "Cancelled"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2023-05-19 11:28:01.415310",
+  "name": "Confirmed",
+  "style": "Primary",
+  "workflow_state_name": "Confirmed"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2023-05-19 11:32:50.222872",
+  "name": "Open",
+  "style": "Warning",
+  "workflow_state_name": "Open"
  }
 ]

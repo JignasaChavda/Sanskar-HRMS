@@ -252,20 +252,20 @@ fixtures = [
             ],
         ]
     ]},
-    {"dt":"Custom Field","filters":[
-        [
-            "module","in",[
-               "Sanskar HRMS"
-            ]
-        ]
-    ]},
-    {"dt":"Property Setter","filters":[
-        [
-            "module","in",[
-               "Sanskar HRMS"
-            ],
-        ]
-    ]},
+    # {"dt":"Custom Field","filters":[
+    #     [
+    #         "module","in",[
+    #            "Sanskar HRMS"
+    #         ]
+    #     ]
+    # ]},
+    # {"dt":"Property Setter","filters":[
+    #     [
+    #         "module","in",[
+    #            "Sanskar HRMS"git
+    #         ],
+    #     ]
+    # ]},
     {"dt":"Print Format","filters":[
         [
             "module","in",[
