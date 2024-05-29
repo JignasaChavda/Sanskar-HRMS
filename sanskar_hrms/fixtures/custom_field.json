@@ -2726,7 +2726,7 @@
   "name": "Leave Application-cc",
   "no_copy": 0,
   "non_negative": 0,
-  "options": "Email CC",
+  "options": "Email CC2",
   "permlevel": 0,
   "precision": "",
   "print_hide": 0,
