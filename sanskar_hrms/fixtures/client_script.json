@@ -1,5 +1,41 @@
 [
  {
+  "_liked_by": "[]",
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Leave Application",
+  "enabled": 1,
+  "modified": "2024-05-29 11:07:10.148178",
+  "module": "Sanskar HRMS",
+  "name": "Create LA for LWP",
+  "script": "frappe.ui.form.on('Leave Application', {\n    setup(frm){\n        if(frm.is_new())\n            {\n            var ids=[\"tithi@sanskartechnolab.com\",\"hitesh@sanskartechnolab.com\"];\n            var row;\n            // frm.clear_table('cc');\n            for(var i=0;i<ids.length;i++){\n                row = frm.add_child(\"cc\");\n                row.cc = ids[i];\n                frm.refresh_field(\"cc\");\n            }\n        }\n    },\n    before_submit(frm) {\n\t\tif(frm.doc.leave_type != \"Leave Without Pay\" && frm.doc.lwp_from){\n\t\t    var lwp_from = frm.doc.lwp_from;\n    \t\tvar lwp_to = frm.doc.lwp_to;\n    \t\tvar emp = frm.doc.employee;\n    \t\tvar emp_nm = frm.doc.employee_name;\n    \t\tvar leave_application = frm.doc.name;\n    \t\tvar lwp_halfday_date;\n            var reason = frm.doc.description;\n    \t\tif(frm.doc.is_halfday_lwp==1){\n    \t\t    lwp_halfday_date = frm.doc.lwp_halfday_date;\n    \t\t}\n    \t\telse\n    \t\t{\n    \t\t    lwp_halfday_date = null;\n    \t\t}\n    \t\t\n    \t\tif(!frm.doc.lwp_from && !frm.doc.lwp_to){\n    \t\t    lwp_from = null;\n    \t\t    lwp_to = null;\n    \t\t}\n    \t\t\n    \t\tif(frm.doc.status == \"Approved\" || frm.doc.status == \"Rejected\")\n    \t\t{\n    \t\t  //  console.log(\"IIINNNNN\");\n    \t\t    frappe.call({\n                                method: \"lwp_leave_application\",\n                                args:{\n                                    \"employee\": emp,\n                                    \"lwp_from\": lwp_from,\n                                    \"lwp_to\": lwp_to,\n                                    \"leave_application\": leave_application,\n                                    \"lwp_halfday_date\" : lwp_halfday_date,\n                                    \"status\": frm.doc.status,\n                                    \"reason\" : reason\n                                },\n                                 callback: function(r) {\n                                    console.log(\"Success\");\n                                    frm.refresh();\n                                }\n                });   \n    \t\t}\n\t\t}\n\t}\n});\n",
+  "view": "Form"
+ },
+ {
+  "_liked_by": "[\"jignasha@sanskartechnolab.com\"]",
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Leave Application",
+  "enabled": 1,
+  "modified": "2024-05-29 11:07:23.773794",
+  "module": "Sanskar HRMS",
+  "name": "Leave Application Email",
+  "script": "frappe.ui.form.on('Leave Application', {\n\tafter_save:function(frm) {\n\t    if(frappe.session.user === frm.doc.employee_email){\n\t\t    if (frm.doc.status === \"Open\" && !frm.doc.leave_application){\n\t\t    var recipients = [];\n\t\t    \n        \t$.each(frm.doc.cc, function(i, d) {\n                recipients.push(d.cc);\n            });\n            console.log(recipients);\n            var ecc_str = \" \";\n            recipients.forEach((element, index) => {\n                  ecc_str += element;\n            \n                  // If there is a next element, add a comma\n                  if (index !== recipients.length - 1) {\n                     ecc_str += ',';\n              }\n            });\n            console.log(ecc_str);\n                var sender = frm.doc.employee_email;\n                var name= frm.doc.name;\n                var approver=frm.doc.leave_approver;\n                // Make an AJAX request to send the email\n                frappe.call({\n                        method: \"get_leave_application_template\",\n                        args: {\n                            sender: sender,\n                            name: name,\n                        },\n                        callback: function(r) {\n                            console.log(r.message);\n                            frappe.call({\n                            \tmethod: \"frappe.core.doctype.communication.email.make\",\n                            \targs: {\n                            \t    sender: r.sender,\n                            \t\trecipients: approver,\n                            \t\tcc: ecc_str,\n                            \t\tcontent: r.message,\n                            \t\tsubject: \"Leave Application\",\n                            \t\tsend_email: 1,\n                            \t\tcommunication_medium: \"Email\",\n                            \t},\n                            \tasync: false,\n                            \tcallback: function(rh){\n                            \t  console.log(\"mail sent\");\n                            \t}\n                            });\n                        }\n                });\n\t\t}\n\t\t}\n\t}\n});",
+  "view": "Form"
+ },
+ {
+  "_liked_by": "[\"jignasha@sanskartechnolab.com\"]",
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Leave Application",
+  "enabled": 1,
+  "modified": "2024-05-29 11:07:17.827099",
+  "module": "Sanskar HRMS",
+  "name": "Leave application reply email",
+  "script": "frappe.ui.form.on('Leave Application', {\n\ton_submit(frm){\n\t\t    var recipients = [];\n        \t$.each(frm.doc.cc, function(i, d) {\n                recipients.push(d.cc);\n            });\n            console.log(recipients);\n            var ecc_str = \" \";\n            recipients.forEach((element, index) => {\n                  ecc_str += element;\n            \n                  // If there is a next element, add a comma\n                  if (index !== recipients.length - 1) {\n                     ecc_str += ',';\n              }\n            });\n            console.log(ecc_str);\n                var sender = frm.doc.leave_approver;\n                var name= frm.doc.name;\n                var owner=frm.doc.employee_email;\n                \n                // Make an AJAX request to send the email\n                frappe.call({\n                        method: \"get_application_reply_template\",\n                        args: {\n                            sender: sender,\n                            name: name,\n                            owner: owner,\n                        },\n                        callback: function(r) {\n                            console.log(r.message);\n                            frappe.call({\n                            \tmethod: \"frappe.core.doctype.communication.email.make\",\n                            \targs: {\n                            \t    sender: r.sender,\n                            \t\trecipients: r.recipient,\n                            \t\tcc: ecc_str,\n                            \t\tcontent: r.message,\n                            \t\tsubject: \"Leave Application Status\",\n                            \t\tsend_email: 1,\n                            \t\tcommunication_medium: \"Email\",\n                            \t},\n                            \tasync: false,\n                            \tcallback: function(rh){\n                            \t  console.log(\"mail sent\");\n                            \t}\n                            });\n                        }\n                });\n\t\t\n\t}\n});",
+  "view": "Form"
+ },
+ {
   "docstatus": 0,
   "doctype": "Client Script",
   "dt": "Interview",
