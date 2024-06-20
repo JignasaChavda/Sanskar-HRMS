@@ -28,8 +28,8 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_js = {"Employee Onboarding" : "public/js/employee_onboarding.js"}
+# doctype_list_js = {"Task" : "public/js/task_listview.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -120,7 +120,8 @@ app_license = "mit"
 override_doctype_class = {
 	"Interview": "sanskar_hrms.interview.Interview",
     "Job Offer":"sanskar_hrms.job_offer.JobOffer",
-    "Interview Feedback":"sanskar_hrms.interview_feedback.InterviewFeedback"
+    "Interview Feedback":"sanskar_hrms.interview_feedback.InterviewFeedback",
+    "Employee Onboarding": "sanskar_hrms.employee_onboarding.extendclass"
 }
 
 # Document Events
