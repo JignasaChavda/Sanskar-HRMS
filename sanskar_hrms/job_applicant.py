@@ -1,5 +1,13 @@
 import frappe
 from hrms.hr.doctype.interview.interview import get_interviewers
+from hrms.hr.doctype.job_applicant.job_applicant import JobApplicant as BaseJobApplicant
+
+class extendclass(BaseJobApplicant):
+	def before_save(self):
+		if self.custom_interview_round == "Telephonic Round" and not self.custom_recruiter:
+			self.custom_recruiter = frappe.session.user
+		# frappe.msgprint("Hello")
+
 @frappe.whitelist(allow_guest=True)
 def create_interview(doc, interview_round):
 	import json

@@ -121,7 +121,8 @@ override_doctype_class = {
 	"Interview": "sanskar_hrms.interview.Interview",
     "Job Offer":"sanskar_hrms.job_offer.JobOffer",
     "Interview Feedback":"sanskar_hrms.interview_feedback.InterviewFeedback",
-    "Employee Onboarding": "sanskar_hrms.employee_onboarding.extendclass"
+    "Employee Onboarding": "sanskar_hrms.employee_onboarding.extendclass",
+    "Job Applicant": "sanskar_hrms.job_applicant.extendclass"
 }
 
 # Document Events
@@ -293,6 +294,13 @@ fixtures = [
         [
             "name","in",[
                "Send mail to Interviewers"
+            ],
+        ]
+    ]},
+    {"dt":"Dashboard Chart","filters":[
+        [
+            "module","in",[
+               "Sanskar HRMS"
             ],
         ]
     ]}
