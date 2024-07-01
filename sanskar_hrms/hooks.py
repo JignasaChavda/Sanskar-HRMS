@@ -297,11 +297,11 @@ fixtures = [
             ],
         ]
     ]},
-    {"dt":"Dashboard Chart","filters":[
-        [
-            "module","in",[
-               "Sanskar HRMS"
-            ],
-        ]
-    ]}
+    # {"dt":"Dashboard Chart","filters":[
+    #     [
+    #         "module","in",[
+    #            "Sanskar HRMS"
+    #         ],
+    #     ]
+    # ]}
 ]
