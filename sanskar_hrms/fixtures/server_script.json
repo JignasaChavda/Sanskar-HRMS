@@ -66,13 +66,13 @@
   "doctype_event": "Before Insert",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2024-06-19 12:36:37.233832",
+  "modified": "2024-07-04 10:53:17.255593",
   "module": "Sanskar HRMS",
   "name": "Get Leave Application template",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": null,
-  "script": "doc_name = frappe.form_dict['name']\nemp_id = frappe.form_dict['sender']\n\n# sender = frappe.db.get_value('User Email', {'parent': emp_id}, ['email_id'])\nsender = frappe.db.get_value('Email Account', {'default_outgoing': 1}, ['email_id'])\n\ndoc = frappe.get_doc(\"Leave Application\", doc_name)\nemail_template = frappe.get_doc(\"Email Template\", \"Leave Status Notification-LSN\")\nmessage = frappe.render_template(email_template.response_html, {'doc': doc}) \n\nfrappe.response['sender']=sender\nfrappe.response['message']= message",
+  "script": "doc_name = frappe.form_dict['name']\nemp_id = frappe.form_dict['sender']\n\nsender = frappe.db.get_value('User Email', {'parent': emp_id}, ['email_id'])\n# sender = frappe.db.get_value('Email Account', {'default_outgoing': 1}, ['email_id'])\n\ndoc = frappe.get_doc(\"Leave Application\", doc_name)\nemail_template = frappe.get_doc(\"Email Template\", \"Leave Status Notification-LSN\")\nmessage = frappe.render_template(email_template.response_html, {'doc': doc}) \n\nfrappe.response['sender']=sender\nfrappe.response['message']= message",
   "script_type": "API"
  },
  {
@@ -85,13 +85,13 @@
   "doctype_event": "Before Insert",
   "enable_rate_limit": 0,
   "event_frequency": "All",
-  "modified": "2024-06-19 17:29:38.797600",
+  "modified": "2024-07-04 10:55:27.470669",
   "module": "Sanskar HRMS",
   "name": "Get Leave Application Reply Template",
   "rate_limit_count": 5,
   "rate_limit_seconds": 86400,
   "reference_doctype": null,
-  "script": "doc_name = frappe.form_dict['name']\nemp_id = frappe.form_dict['sender']\nowner = frappe.form_dict['owner']\n\n# sender = frappe.db.get_value('User Email', {'parent': emp_id}, ['email_id'])\nsender = frappe.db.get_value('Email Account', {'default_outgoing': 1}, ['email_id'])\nrecipient = frappe.db.get_value('User Email', {'parent': owner}, ['email_id'])\n\ndoc = frappe.get_doc(\"Leave Application\", doc_name)\nemail_template = frappe.get_doc(\"Email Template\", \"Leave Approval Notification-LAN\")\nmessage = frappe.render_template(email_template.response_html, {'doc': doc}) \n\nfrappe.response['sender']=sender\nfrappe.response['recipient']=recipient\nfrappe.response['message']= message",
+  "script": "doc_name = frappe.form_dict['name']\nemp_id = frappe.form_dict['sender']\nowner = frappe.form_dict['owner']\n\nsender = frappe.db.get_value('User Email', {'parent': emp_id}, ['email_id'])\n# sender = frappe.db.get_value('Email Account', {'default_outgoing': 1}, ['email_id'])\nrecipient = frappe.db.get_value('User Email', {'parent': owner}, ['email_id'])\n\ndoc = frappe.get_doc(\"Leave Application\", doc_name)\nemail_template = frappe.get_doc(\"Email Template\", \"Leave Approval Notification-LAN\")\nmessage = frappe.render_template(email_template.response_html, {'doc': doc}) \n\nfrappe.response['sender']=sender\nfrappe.response['recipient']=recipient\nfrappe.response['message']= message",
   "script_type": "API"
  },
  {
